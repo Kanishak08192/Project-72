@@ -6,8 +6,11 @@ import {
   TextInput,
   Image,
   StyleSheet,
-  Button
+  Button,
+  Alert,
+  KeyboardAvoidingView
 } from 'react-native';
+
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import firebase from 'firebase';
@@ -22,19 +25,23 @@ export default class WriteStoryScreen extends React.Component {
       story: ''
     }
   }
-  submitStory = () =>{
-    db.collection("stories").add({
+  submitStory = async() =>{
+     await db.collection("stories").add({
       'title': this.state.title,
       'author': this.state.author,
       'story': this.state.story
     })
+    
+    alert("Story Submitted")
 
   }
   render() {
     return (
       <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior= "padding" enabled/>
     
         
+            
            
         <Text style={{textAlign:'center', fontSize:30, fontWeight: "bold"}}>Story Hub</Text>
         <View style={styles.inputView}>
@@ -72,7 +79,14 @@ export default class WriteStoryScreen extends React.Component {
      
        <TouchableOpacity
           style={styles.submitButton}
-          onPress={this.submitStory()}
+          onPress={async()=>{
+            this.submitStory();
+            this.setState({
+              title: '',
+              author: '',
+              story: ''
+            })
+          }}
          
             >
           <Text style={styles.submitButtonText}>Submit</Text>
